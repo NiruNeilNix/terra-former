@@ -18,6 +18,13 @@ config/icon="res://icon.svg"
 
 enabled=PackedStringArray("res://addons/terraformer/plugin.cfg")
 
+[plugins]
+
+ai_assistant_hub/llm_api="gemini_api"
+ai_assistant_hub/preferences/thinking_target=0
+ai_assistant_hub/preferences/skip_greeting=false
+ai_assistant_hub/preferences/always_scroll_to_bottom=false
+
 [rendering]
 
 textures/canvas_textures/default_texture_filter=0

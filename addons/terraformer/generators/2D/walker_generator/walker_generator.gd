@@ -21,35 +21,23 @@ var _walked_tiles: PackedVector2Array
 
 
 func generate(starting_grid: MapGrid = null) -> void:
-	if Engine.is_editor_hint() and not editor_preview:
-		push_warning("%s: Editor Preview is not enabled so nothing happened!" % name)
-		return
-
-	if not settings:
-		push_error("%s doesn't have a settings resource" % name)
+	if not _can_generate():
 		return
 
 	generation_started.emit()
-
 	var _time_now: int = Time.get_ticks_msec()
 
-	if starting_grid == null:
-		erase()
-	else:
-		grid = starting_grid
+	_assign_starting_grid(starting_grid)
 
 	_add_walker(starting_tile)
 	_generate_floor()
 	_apply_modifiers(settings.modifiers)
 
-	if is_instance_valid(next_pass):
+	if _has_next_pass():
 		next_pass.generate(grid)
 		return
 
-	var _time_elapsed: int = Time.get_ticks_msec() - _time_now
-	if OS.is_debug_build():
-		print("%s: Generating took %s seconds" % [name, float(_time_elapsed) / 1000])
-
+	_log_generation_time(_time_now)
 	grid_updated.emit()
 	generation_finished.emit()
 
@@ -78,44 +66,25 @@ func _generate_floor() -> void:
 		for walker in _walkers:
 			_move_walker(walker)
 
-		if settings.fullness_check == settings.FullnessCheck.TILE_AMOUNT:
-			if _walked_tiles.size() >= settings.max_tiles:
-				break
-		elif settings.fullness_check == settings.FullnessCheck.PERCENTAGE:
-			var _world_size_max: int = settings.world_size.x * settings.world_size.y
-			if float(_walked_tiles.size()) / _world_size_max >= settings.fullness_percentage:
-				break
+		if _should_stop_generation():
+			break
 
 		iterations += 1
 
-	for tile in _walked_tiles:
-		grid.set_value(tile, settings.tile)
-
-	_walkers.clear()
-	_walked_tiles.clear()
+	_place_walked_tiles()
+	_cleanup_walkers()
 
 
 func _move_walker(walker: Walker) -> void:
-	if randf() <= settings.destroy_walker_chance and _walkers.size() > 1:
+	if _should_destroy_walker():
 		_walkers.erase(walker)
 		return
 
-	if not _walked_tiles.has(walker.pos):
-		_walked_tiles.append(walker.pos)
+	_record_walker_position(walker.pos)
 
-	if randf() <= settings.new_dir_chance:
-		var random_rotation = _get_random_rotation()
-		walker.dir = round(walker.dir.rotated(random_rotation))
-
-	if randf() <= settings.new_walker_chance and _walkers.size() < settings.max_walkers:
-		_add_walker(walker.pos)
-
-	for room in settings.room_chances:
-		if randf() <= settings.room_chances[room]:
-			var room_tiles = _get_square_room(walker.pos, room)
-			for pos in room_tiles:
-				if not _walked_tiles.has(pos):
-					_walked_tiles.append(pos)
+	_update_walker_direction(walker)
+	_try_spawn_new_walker(walker.pos)
+	_try_create_rooms(walker.pos)
 
 	walker.pos += walker.dir
 	if settings.constrain_world_size:
@@ -178,3 +147,78 @@ func _get_configuration_warnings() -> PackedStringArray:
 		warnings.append("Needs WalkerGeneratorSettings to work.")
 
 	return warnings
+
+
+func _can_generate() -> bool:
+	if Engine.is_editor_hint() and not editor_preview:
+		push_warning("%s: Editor Preview is not enabled so nothing happened!" % name)
+		return false
+	if not settings:
+		push_error("%s doesn't have a settings resource" % name)
+		return false
+	return true
+
+
+func _assign_starting_grid(starting_grid: MapGrid) -> void:
+	if starting_grid == null:
+		erase()
+		return
+	grid = starting_grid
+
+
+func _has_next_pass() -> bool:
+	return is_instance_valid(next_pass)
+
+
+func _log_generation_time(start_time: int) -> void:
+	var elapsed_time: int = Time.get_ticks_msec() - start_time
+	if OS.is_debug_build():
+		print("%s: Generating took %s seconds" % [name, float(elapsed_time) / 1000])
+
+
+func _should_stop_generation() -> bool:
+	if settings.fullness_check == settings.FullnessCheck.TILE_AMOUNT:
+		return _walked_tiles.size() >= settings.max_tiles
+	elif settings.fullness_check == settings.FullnessCheck.PERCENTAGE:
+		var world_size_max: int = settings.world_size.x * settings.world_size.y
+		return float(_walked_tiles.size()) / world_size_max >= settings.fullness_percentage
+	return false
+
+
+func _place_walked_tiles() -> void:
+	for tile in _walked_tiles:
+		grid.set_value(tile, settings.tile)
+
+
+func _cleanup_walkers() -> void:
+	_walkers.clear()
+	_walked_tiles.clear()
+
+
+func _should_destroy_walker() -> bool:
+	return randf() <= settings.destroy_walker_chance and _walkers.size() > 1
+
+
+func _record_walker_position(position: Vector2) -> void:
+	if not _walked_tiles.has(position):
+		_walked_tiles.append(position)
+
+
+func _update_walker_direction(walker: Walker) -> void:
+	if randf() <= settings.new_dir_chance:
+		var random_rotation = _get_random_rotation()
+		walker.dir = round(walker.dir.rotated(random_rotation))
+
+
+func _try_spawn_new_walker(position: Vector2) -> void:
+	if randf() <= settings.new_walker_chance and _walkers.size() < settings.max_walkers:
+		_add_walker(position)
+
+
+func _try_create_rooms(position: Vector2) -> void:
+	for room in settings.room_chances:
+		if randf() <= settings.room_chances[room]:
+			var room_tiles = _get_square_room(position, room)
+			for pos in room_tiles:
+				if not _walked_tiles.has(pos):
+					_walked_tiles.append(pos)
