@@ -2,16 +2,17 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://c0crdptrt1p4a"
-path="res://.godot/imported/ArtForTOPDOWN-GaeaTutorial.png-fe6e9b38ca4b59145f02f5a49e4ae684.ctex"
+uid="uid://diog0soe3368u"
+path="res://.godot/imported/terra_renderer.svg-e4ceb4e5de1004f63feddf3d01bac622.ctex"
 metadata={
+"has_editor_variant": true,
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Asset/ArtForTOPDOWN-GaeaTutorial.png"
-dest_files=["res://.godot/imported/ArtForTOPDOWN-GaeaTutorial.png-fe6e9b38ca4b59145f02f5a49e4ae684.ctex"]
+source_file="res://addons/terraformer/renderers/terra_renderer.svg"
+dest_files=["res://.godot/imported/terra_renderer.svg-e4ceb4e5de1004f63feddf3d01bac622.ctex"]
 
 [params]
 
@@ -32,3 +33,6 @@ process/hdr_as_srgb=false
 process/hdr_clamp_exposure=false
 process/size_limit=0
 detect_3d/compress_to=1
+svg/scale=1.0
+editor/scale_with_editor_scale=true
+editor/convert_colors_with_editor_theme=true

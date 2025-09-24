@@ -2,17 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://diog0soe3368u"
-path="res://.godot/imported/gaea_renderer.svg-73e6760c4138ba1fb2c851afff2a105f.ctex"
+uid="uid://c0crdptrt1p4a"
+path="res://.godot/imported/test-asset.png-1689569c3fd9c0d26552a2a4a521bbd4.ctex"
 metadata={
-"has_editor_variant": true,
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://addons/terraformer/renderers/gaea_renderer.svg"
-dest_files=["res://.godot/imported/gaea_renderer.svg-73e6760c4138ba1fb2c851afff2a105f.ctex"]
+source_file="res://addons/terraformer/documentation/test-asset.png"
+dest_files=["res://.godot/imported/test-asset.png-1689569c3fd9c0d26552a2a4a521bbd4.ctex"]
 
 [params]
 
@@ -33,6 +32,3 @@ process/hdr_as_srgb=false
 process/hdr_clamp_exposure=false
 process/size_limit=0
 detect_3d/compress_to=1
-svg/scale=1.0
-editor/scale_with_editor_scale=true
-editor/convert_colors_with_editor_theme=true

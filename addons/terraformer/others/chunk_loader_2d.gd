@@ -2,27 +2,13 @@
 @icon("chunk_loader.svg")
 class_name ChunkLoader2D
 extends Node2D
-## Used to handle chunk loading and unloading with a [ChunkAwareGenerator2D].
-## @tutorial(Chunk Generation): https://benjatk.github.io/Gaea/#/tutorials/chunk_generation
 
-## The generator that loads the chunks.[br]
-## [b]Note:[/b] If you're chaining generators together using [param next_pass],
-## this has to be set to the first generator in the chain.
 @export var generator: ChunkAwareGenerator2D
-## Chunks will be loaded arround this Node.
-## If set to null chunks will be loaded around (0, 0)
 @export var actor: Node2D
-## The distance around the actor which will be loaded.
-## The actual loading area will be this value in all 4 directions.
 @export var loading_radius: Vector2i = Vector2i(2, 2)
-## Amount of miliseconds the loader waits before it checks if new chunks need to be loaded.
 @export_range(0, 1, 1, "or_greater", "suffix:ms") var update_rate: int = 0
-## Executes the loading process on ready [br]
-## [b]Warning:[/b] No chunks might load if set to false.
 @export var load_on_ready: bool = true
-## If set to true, the Chunk Loader unloads chunks left behind
 @export var unload_chunks: bool = true
-## If set to true, will prioritize chunks closer to the [param actor].
 @export var load_closest_chunks_first: bool = true
 
 var _last_run: int = 0

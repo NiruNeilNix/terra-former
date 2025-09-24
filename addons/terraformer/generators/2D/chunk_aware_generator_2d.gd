@@ -2,17 +2,12 @@
 @icon("../chunk_aware_generator.svg")
 class_name ChunkAwareGenerator2D
 extends TerraGenerator2D
-## @tutorial(Chunk Generation): https://benjatk.github.io/Gaea/#/tutorials/chunk_generation
 
-## Emitted when any update to a chunk is made. Either erasing it or generating it.
 signal chunk_updated(chunk_position: Vector2i)
-## Emitted when a chunk is finished generated. [signal chunk_updated] is also called.
 signal chunk_generation_finished(chunk_position: Vector2i)
-## Emitted when a chunk is erased. [signal chunk_updated] is also called.
 signal chunk_erased(chunk_position: Vector2i)
 
-## The size of the Chunks. [br]
-## [b]Warning: Cannot be set to 0[/b]
+
 @export var chunk_size: Vector2i = Vector2i(16, 16)
 
 var generated_chunks: Array[Vector2i] = []

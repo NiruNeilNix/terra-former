@@ -1,0 +1,52 @@
+Basic TerraFormer Tutorial
+
+(YOU CAN USE THE PROVIDED ASSET THAT CAME WITH THIS TUTORIAL)
+
+You might be asking, 'How do I get started with using Terraformer'? 
+Well you're in luck because I'm here to help you get started with using Terraformer
+
+
+Terraformer utilizes Godot's Node-based system to provide seamless map generation
+directly within your scene structure. You simply add nodes added by Terraformer
+to your scene tree and configure them through the familiar [INSPECTOR PANEL]
+
+Through this tutorial, we'll be making a map using a relatively simple
+tileset and Perlin Noise Generator 
+
+Getting Started (P.S: You're allowed to structure your [SCENE] and [NODE TREE] however you'd like)
+
+Step 1: Open your scene and create a Node2D as the root or parent node of your map
+
+Step 2: On under any Node2D create a [ThreadedTilemapRenderer], [NoiseGenerator], and  [Tilemap Layer]
+
+[ThreadedTilemapRenderer] is responsible for renderering and drawing the map itself. 
+[Noise Generator] defines the algorithm and parameters for map generation.
+[Tilemap Layer] is Godot's built in Node where you can store your asset or tileset
+
+On the right-hand corner of the Godot Editor, you'll see the Inspector Dock. This is where certain properties of a node could be edited
+
+Step 3: On the Inspector Dock of [ThreadedTilemapRenderer], Assign your [Tilemap Layer] to the renderer (you can add multiple layers, indexed accordingly),
+then choose the [NoiseGenerator] as the generator to use for this map.
+
+Step 4: Click [NoiseGenerator] in the scene tree to access its Inspector Dock.
+Under 'Settings', click <empty> and select 'New NoiseGeneratorSettings' to create a new settings resource for the noise algorithm.
+
+Step 5: Click the newly created 'NoiseGeneratorSettings' to open its editable parameters.
+In the [Tiles] section, click "Add Element" to add tile data.
+Select <empty> and choose 'TilemapTileInfo' to define a tile.
+Set the Tilemap Layer to match the index from [ThreadedTilemapRenderer].
+Use the Atlas Coord (e.g., (0, 0)) to pick a specific tile from your tileset in the [Tilemap Layer] node.
+For this tutorial, use the atlas coordinates (0, 0) to select the top-left tile.
+
+Step 6: From here, you can pretty much press 'Generate' from [NoiseGenerator] which should generate a 256 x 256 area made out of the one tile we picked
+You customize the [Threshold] of how frequent one specific tile will appear on the grid 
+
+
+--NOTES--
+
+- This tutorial uses a simple setup, but you can experiment with multiple tiles, layers, noise settings, and modifiers for more complex maps.
+- Ensure your tileset is properly loaded into the [Tilemap Layer] node for the generator to work.
+- If the map doesn’t generate as expected, double-check the Atlas Coord and layer index matches.
+
+
+Tutorial Written by Vyrtigern

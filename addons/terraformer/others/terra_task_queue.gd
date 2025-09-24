@@ -1,8 +1,6 @@
 @tool
 class_name TerraTaskQueue
 extends RefCounted
-## Lightweight task queue built on top of WorkerThreadPool.
-## Centralizes common enqueueing, completion, and optional task limiting.
 
 @export var task_limit: int = -1
 
@@ -49,5 +47,3 @@ func _has_capacity() -> bool:
 	if task_limit < 0:
 		return true
 	return _tasks.size() < task_limit
-
-

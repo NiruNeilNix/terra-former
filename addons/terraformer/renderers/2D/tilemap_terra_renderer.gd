@@ -1,10 +1,6 @@
 @tool
 class_name TilemapTerraRenderer
 extends TerraRenderer2D
-## Uses the [param tile_map] to draw the generator's [param grid].
-##
-## Takes [TilemapTileInfo] to determine which tile to place
-## in every cell.
 
 enum NodeType {
 	TILEMAP_LAYERS, ## Use [TileMapLayer]s, with an array of them determining which one is which.
@@ -24,16 +20,13 @@ enum NodeType {
 		tile_map = value
 		update_configuration_warnings()
 @export var clear_tile_map_on_draw: bool = true
-## Erases the cell when an empty tile is found in all layers. Recommended: [code]true[/code].
 @export var erase_empty_tiles: bool = true
-## Set this to [code]true[/code] if you have gaps between your terrains. Can cause problems.
 @export var terrain_gap_fix: bool = false
 
 
 func _ready() -> void:
 	super()
 
-	# generators are always required here, this warning serves purpose for both tilemap types
 	if !generator:
 		push_error("TilemapTerraRenderer needs a TerraGenerator node assigned in its exports.")
 		return
@@ -42,7 +35,6 @@ func _ready() -> void:
 		if not is_instance_valid(tile_map):
 			push_error("TilemapTerraRenderer needs TileMap to work.")
 			return
-
 		if _tile_size_mismatch(Vector2i(Vector2(tile_map.tile_set.tile_size) * tile_map.scale)):
 			push_warning("TileMap's tile size doesn't match with generator's tile size, can cause generation issues.\n\t\t\t\t\t\tThe generator's tile size has been set to the TileMap's tile size.")
 			generator.tile_size = Vector2(tile_map.tile_set.tile_size) * tile_map.scale
@@ -50,12 +42,10 @@ func _ready() -> void:
 		if tile_map_layers.is_empty():
 			push_error("TilemapTerraRenderer needs at least one TileMapLayer to work.")
 			return
-
 		var layer: TileMapLayer = _first_layer()
 		if _tile_size_mismatch(Vector2i(Vector2(layer.tile_set.tile_size) * layer.scale)):
 			push_warning("The TileMapLayer's tile size doesn't match with generator's tile size, can cause generation issues.\n\t\t\t\t\t\tThe generator's tile size has been set to the layer's tile size. (Only layer 0 checked)")
 			generator.tile_size = Vector2(layer.tile_set.tile_size) * layer.scale
-
 
 func _draw_area(area: Rect2i) -> void:
 	var terrain_groups_by_info: Dictionary
@@ -97,7 +87,6 @@ func _draw_area(area: Rect2i) -> void:
 
 	(func(): area_rendered.emit(area)).call_deferred()
 
-
 func _draw() -> void:
 	if clear_tile_map_on_draw:
 		if _is_single_tilemap():
@@ -107,7 +96,6 @@ func _draw() -> void:
 				layer.clear()
 	super._draw()
 
-
 func _set_tile(cell: Vector2i, tile_info: TilemapTileInfo) -> void:
 	_adapter_set_cell(
 		tile_info.tilemap_layer,
@@ -116,7 +104,6 @@ func _set_tile(cell: Vector2i, tile_info: TilemapTileInfo) -> void:
 		tile_info.atlas_coord,
 		tile_info.alternative_tile
 	)
-
 
 func _set_terrain(cells: Array, tile_info: TilemapTileInfo) -> void:
 	_adapter_set_terrain(
@@ -137,7 +124,6 @@ func _set_pattern(cell:Vector2i, tile_info: TilemapTileInfo):
 
 func _get_tilemap_layers_count() -> int:
 	return _adapter_layers_count()
-
 
 func _erase_tilemap_cell(layer: int, cell: Vector2i) -> void:
 	_adapter_erase_cell(layer, cell)
@@ -200,13 +186,11 @@ func _get_configuration_warnings() -> PackedStringArray:
 
 	return warnings
 
-
 func _validate_property(property: Dictionary) -> void:
 	if property.name == "tile_map" and _is_layers_mode():
 		property.usage = PROPERTY_USAGE_NONE
 	elif property.name == "tile_map_layers" and _is_single_tilemap():
 		property.usage = PROPERTY_USAGE_NONE
-
 
 func _is_single_tilemap() -> bool:
 	return node_type == NodeType.TILEMAP
